@@ -1,0 +1,50 @@
+version: '2'
+services:
+  postgres:
+    image: mdillon/postgis:9.5
+    volumes:
+      - /data/tf_docker/postgres:/var/lib/postgresql/data
+      - /data/tf_docker/postgres-backups:/backups
+    env_file: .env
+
+  jupyter:
+    #image: jupyter/datascience-notebook:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    ports:
+      - "8888:8888"
+      - "8000:8000"
+    environment:
+     - GRANT_SUDO=yes
+    user: root
+    links:
+      - postgres
+    depends_on:
+      - postgres
+      - rabbit
+      - redis
+    volumes_from:
+      - self
+      - work
+
+  redis:
+    image: redis:3.0
+
+  rabbit:
+    image: rabbitmq:3-management
+    hostname: rabbit
+    ports:
+      - "8070:15672"
+      - "5672:5672"
+
+  work:
+    image: "busybox"
+    volumes:
+      - ${PWD}/work:/home/jovyan/work
+
+  self:
+    image: "busybox"
+    volumes:
+      - ${PWD}:/home/jovyan/self
