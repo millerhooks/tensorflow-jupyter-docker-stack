@@ -32,3 +32,5 @@ find the solution.
 
 Cant distro Java cause Oracle. I think the breadcrumbs should be easy enough.
 If you have a solution on that and syntaxnet, let me know!
+
+Also, You should really try pymux and pyvim in the Jupyter terminal. It's Glorious
